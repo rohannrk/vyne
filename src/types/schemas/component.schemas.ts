@@ -43,3 +43,7 @@ export const addComponentSchema = z.object({
   workspaceId:   z.string().cuid(),
   componentName: componentNameSchema,
 })
+
+export const listComponentsSchema = z.object({
+  workspaceId: z.string().cuid(),
+})
