@@ -45,5 +45,6 @@ next-env.d.ts
 /_bmad
 /src/generated/
 /_bmad-output
+/.cursor
 /.cursor/commands
 CHANGELOG.md
