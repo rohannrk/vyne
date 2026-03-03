@@ -1,29 +1,45 @@
 import { auth, signIn } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+
+export const metadata = {
+  title: 'Sign in — VYNE',
+}
 
 export default async function LoginPage() {
   const session = await auth()
-
-  if (session?.user) {
-    redirect('/')
-  }
+  if (session?.user) redirect('/')
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-sm space-y-8 px-4">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight">Vyne</h1>
-          <p className="text-muted-foreground text-sm">
-            Visual component design for shadcn/ui
+    <div className="min-h-screen flex items-center justify-center bg-[var(--surface-base)] px-4">
+      {/* Subtle grid background */}
+      <div
+        className="pointer-events-none fixed inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            'linear-gradient(var(--text-primary) 1px, transparent 1px), linear-gradient(90deg, var(--text-primary) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+        aria-hidden="true"
+      />
+
+      <div className="relative w-full max-w-sm">
+        {/* Logo */}
+        <div className="mb-8 text-center">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--brand)] shadow-[0_0_32px_oklch(0.72_0.19_260/0.35)] mb-4">
+            <span className="text-xl font-bold text-white">V</span>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">VYNE</h1>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            GitHub-native control plane for design systems
           </p>
         </div>
 
-        <div className="rounded-xl border bg-card p-8 shadow-sm space-y-6">
-          <div className="space-y-1 text-center">
-            <h2 className="text-xl font-semibold">Sign in</h2>
-            <p className="text-muted-foreground text-sm">
-              Use your GitHub account to continue
+        {/* Card */}
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-6 shadow-[0_4px_32px_oklch(0_0_0/0.4)]">
+          <div className="mb-6 text-center">
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">Sign in to continue</h2>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">
+              Connect your GitHub account to get started
             </p>
           </div>
 
@@ -33,11 +49,36 @@ export default async function LoginPage() {
               await signIn('github', { redirectTo: '/' })
             }}
           >
-            <Button type="submit" className="w-full gap-2">
+            <button
+              type="submit"
+              id="github-signin-btn"
+              className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-[var(--surface-overlay)] border border-[var(--border-subtle)] px-4 py-2.5 text-sm font-medium text-[var(--text-primary)] transition-all duration-150 hover:border-[var(--brand)]/50 hover:bg-[var(--surface-overlay)] hover:shadow-[0_0_0_1px_oklch(0.72_0.19_260/0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"
+            >
               <GitHubIcon />
-              Sign in with GitHub
-            </Button>
+              Continue with GitHub
+            </button>
           </form>
+
+          <p className="mt-4 text-center text-xs text-[var(--text-tertiary)]">
+            By signing in, you agree to our{' '}
+            <span className="text-[var(--text-secondary)]">Terms of Service</span>
+            {' '}and{' '}
+            <span className="text-[var(--text-secondary)]">Privacy Policy</span>
+          </p>
+        </div>
+
+        {/* Feature hints */}
+        <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+          {[
+            { label: 'Live canvas', desc: 'See real props update instantly' },
+            { label: 'GitHub PRs', desc: 'Push changes without touching code' },
+            { label: 'shadcn/ui', desc: 'Works with your existing components' },
+          ].map(({ label, desc }) => (
+            <div key={label} className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-3">
+              <p className="text-[11px] font-semibold text-[var(--text-primary)]">{label}</p>
+              <p className="mt-0.5 text-[10px] text-[var(--text-tertiary)] leading-tight">{desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

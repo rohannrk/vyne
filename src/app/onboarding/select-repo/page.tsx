@@ -3,6 +3,26 @@ import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { SelectRepoForm } from '@/components/onboarding/select-repo-form'
 
+export const metadata = { title: 'Select repository — VYNE' }
+
+function StepIndicator({ current, total }: { current: number; total: number }) {
+  return (
+    <div className="flex items-center gap-2">
+      {Array.from({ length: total }).map((_, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <div
+            className={`h-1.5 w-6 rounded-full transition-colors ${i + 1 <= current ? 'bg-[var(--brand)]' : 'bg-[var(--border-subtle)]'
+              }`}
+          />
+        </div>
+      ))}
+      <span className="ml-1 text-xs text-[var(--text-tertiary)]">
+        Step {current} of {total}
+      </span>
+    </div>
+  )
+}
+
 export default async function SelectRepoPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
@@ -17,18 +37,18 @@ export default async function SelectRepoPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h2 className="text-xl font-semibold">Select repository</h2>
-        <p className="text-muted-foreground text-sm">
+      <StepIndicator current={3} total={4} />
+
+      <div>
+        <h2 className="text-xl font-semibold text-[var(--text-primary)]">Select repository</h2>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">
           Choose the GitHub repository that contains your shadcn/ui components.
         </p>
       </div>
 
-      <div className="rounded-xl border bg-card p-6 shadow-sm">
+      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-6">
         <SelectRepoForm workspaceId={workspaceUser.workspaceId} />
       </div>
-
-      <p className="text-center text-xs text-muted-foreground">Step 3 of 4</p>
     </div>
   )
 }

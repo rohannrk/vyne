@@ -4,11 +4,41 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─── VYNE Design Tokens ──────────────────────────────────────────────────── */
+/* Dark-mode-first. OKLCH colour system. Linear-inspired. */
+
 @theme inline {
+  /* Map CSS vars → Tailwind utilities */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Surfaces */
+  --color-surface-base: var(--surface-base);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+
+  /* Border */
+  --color-border-subtle: var(--border-subtle);
+
+  /* Text */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+
+  /* Brand */
+  --color-brand: var(--brand);
+  --color-brand-subtle: var(--brand-subtle);
+
+  /* Status */
+  --color-status-synced: var(--status-synced);
+  --color-status-modified: var(--status-modified);
+  --color-status-pending-add: var(--status-pending-add);
+  --color-status-pending-push: var(--status-pending-push);
+  --color-status-error: var(--status-error);
+
+  /* shadcn compat tokens */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -17,11 +47,6 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -47,80 +72,170 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
+/* ─── VYNE: Dark mode is the only mode for MVP ───────────────────────────── */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.5rem;
+
+  /* VYNE surface system */
+  --surface-base: oklch(0.12 0 0);
+  --surface-raised: oklch(0.17 0 0);
+  --surface-overlay: oklch(0.22 0 0);
+  --border-subtle: oklch(0.28 0 0);
+
+  /* VYNE text system */
+  --text-primary: oklch(0.96 0 0);
+  --text-secondary: oklch(0.65 0 0);
+  --text-tertiary: oklch(0.45 0 0);
+
+  /* VYNE brand — violet-indigo */
+  --brand: oklch(0.72 0.19 260);
+  --brand-subtle: oklch(0.20 0.06 260);
+
+  /* VYNE status colours */
+  --status-synced: oklch(0.72 0.17 145);
+  --status-modified: oklch(0.80 0.17 70);
+  --status-pending-add: oklch(0.72 0.14 240);
+  --status-pending-push: oklch(0.55 0 0);
+  --status-error: oklch(0.65 0.20 25);
+
+  /* shadcn token overrides → VYNE dark palette */
+  --background: oklch(0.12 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.17 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.22 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.72 0.19 260);
+  --primary-foreground: oklch(0.96 0 0);
+  --secondary: oklch(0.22 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.20 0.06 260);
+  --accent-foreground: oklch(0.96 0 0);
+  --destructive: oklch(0.65 0.20 25);
+  --border: oklch(0.28 0 0);
+  --input: oklch(0.22 0 0);
+  --ring: oklch(0.72 0.19 260);
+  --sidebar: oklch(0.15 0 0);
+  --sidebar-foreground: oklch(0.96 0 0);
+  --sidebar-primary: oklch(0.72 0.19 260);
+  --sidebar-primary-foreground: oklch(0.96 0 0);
+  --sidebar-accent: oklch(0.20 0.06 260);
+  --sidebar-accent-foreground: oklch(0.96 0 0);
+  --sidebar-border: oklch(0.22 0 0);
+  --sidebar-ring: oklch(0.72 0.19 260);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
+/* ─── Base styles ─────────────────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
   }
+
+  html,
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    /* Hard-code body background to guarantee dark mode regardless of shadcn cascade */
+    background-color: oklch(0.12 0 0);
+    color: oklch(0.96 0 0);
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scrollbar styling — subtle, not distracting */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.32 0 0);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.40 0 0);
+  }
+
+  /* Focus ring — brand colour */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ─── VYNE utility classes ────────────────────────────────────────────────── */
+@layer utilities {
+  .vyne-surface-base {
+    background-color: var(--surface-base);
+  }
+
+  .vyne-surface-raised {
+    background-color: var(--surface-raised);
+  }
+
+  .vyne-surface-overlay {
+    background-color: var(--surface-overlay);
+  }
+
+  .vyne-text-primary {
+    color: var(--text-primary);
+  }
+
+  .vyne-text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .vyne-text-tertiary {
+    color: var(--text-tertiary);
+  }
+
+  .vyne-border {
+    border-color: var(--border-subtle);
+  }
+
+  .vyne-status-synced {
+    color: var(--status-synced);
+  }
+
+  .vyne-status-modified {
+    color: var(--status-modified);
+  }
+
+  .vyne-status-pending-add {
+    color: var(--status-pending-add);
+  }
+
+  .vyne-status-pending-push {
+    color: var(--status-pending-push);
+  }
+
+  .vyne-status-error {
+    color: var(--status-error);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
