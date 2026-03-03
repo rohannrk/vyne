@@ -1,164 +1,91 @@
+import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { Prisma } from '@/generated/prisma'
 import { createTRPCRouter, protectedProcedure } from '@/server/trpc'
-import {
-  listComponentsSchema,
-  getComponentSchema,
-  listPresetsSchema,
-  createPresetSchema,
-} from '@/types/schemas/component.schemas'
+import { prisma } from '@/lib/db'
+import { Prisma } from '@/generated/prisma'
 
-// ─── Shared workspace membership guard ──────────────────────────────────────
-async function assertMember(
-  prisma: Parameters<Parameters<typeof protectedProcedure.query>[0]>[0]['ctx']['prisma'],
-  workspaceId: string,
-  userId: string,
-) {
-  const member = await prisma.workspaceUser.findFirst({
-    where: { workspaceId, userId },
-  })
-  if (!member) {
-    throw new TRPCError({
-      code: 'FORBIDDEN',
-      message: 'You do not have access to this workspace.',
+// Workspace membership guard — using prisma singleton for simpler typing
+async function assertMember(workspaceId: string, userId: string) {
+    const member = await prisma.workspaceUser.findFirst({
+        where: { workspaceId, userId },
     })
-  }
-  return member
+    if (!member) {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'You are not a member of this workspace.' })
+    }
+    return member
 }
 
 export const componentsRouter = createTRPCRouter({
-  // ── E-3: List all component configs for the component browser ───────────
-  list: protectedProcedure
-    .input(listComponentsSchema)
-    .query(async ({ ctx, input }) => {
-      await assertMember(ctx.prisma, input.workspaceId, ctx.user.id)
+    // Fetch a single component's config (with presets)
+    getOne: protectedProcedure
+        .input(z.object({ workspaceId: z.string(), componentName: z.string() }))
+        .query(async ({ ctx, input }) => {
+            await assertMember(input.workspaceId, ctx.user.id)
+            return ctx.prisma.componentConfig.findUnique({
+                where: {
+                    workspaceId_componentName: {
+                        workspaceId: input.workspaceId,
+                        componentName: input.componentName,
+                    },
+                },
+                include: { presets: { orderBy: { createdAt: 'asc' } } },
+            })
+        }),
 
-      const configs = await ctx.prisma.componentConfig.findMany({
-        where: { workspaceId: input.workspaceId },
-        orderBy: { componentName: 'asc' },
-      })
+    // List presets for a component config
+    listPresets: protectedProcedure
+        .input(z.object({ workspaceId: z.string(), componentConfigId: z.string() }))
+        .query(async ({ ctx, input }) => {
+            await assertMember(input.workspaceId, ctx.user.id)
+            return ctx.prisma.componentPreset.findMany({
+                where: { componentConfigId: input.componentConfigId, workspaceId: input.workspaceId },
+                orderBy: { createdAt: 'asc' },
+            })
+        }),
 
-      return configs.map((config) => ({
-        id: config.id,
-        name: config.componentName,
-        description: `Config for ${config.componentName}`,
-        source: config.githubFilePath ? 'shadcn' : 'local',
-        lastUpdated: config.lastPushedAt ?? config.lastSyncedAt,
-        status: config.status,
-      }))
-    }),
+    // Save current Dial Kit values as a named preset
+    savePreset: protectedProcedure
+        .input(
+            z.object({
+                workspaceId: z.string(),
+                componentConfigId: z.string(),
+                name: z.string().min(1).max(80),
+                values: z.record(z.string(), z.unknown()),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            await assertMember(input.workspaceId, ctx.user.id)
+            return ctx.prisma.componentPreset.create({
+                data: {
+                    workspaceId: input.workspaceId,
+                    componentConfigId: input.componentConfigId,
+                    name: input.name,
+                    values: input.values as Prisma.InputJsonValue,
+                },
+            })
+        }),
 
-  // ── E-4: Get (or lazily create) a single component's config ─────────────
-  getOne: protectedProcedure
-    .input(getComponentSchema)
-    .query(async ({ ctx, input }) => {
-      await assertMember(ctx.prisma, input.workspaceId, ctx.user.id)
+    // Delete a preset (editor/admin only)
+    deletePreset: protectedProcedure
+        .input(z.object({ workspaceId: z.string(), presetId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const member = await assertMember(input.workspaceId, ctx.user.id)
+            if (member.role === 'VIEWER') {
+                throw new TRPCError({ code: 'FORBIDDEN', message: 'Viewers cannot delete presets.' })
+            }
+            return ctx.prisma.componentPreset.delete({
+                where: { id: input.presetId },
+            })
+        }),
 
-      const where = {
-        where: {
-          workspaceId_componentName: {
-            workspaceId: input.workspaceId,
-            componentName: input.componentName,
-          },
-        },
-      } as const
-
-      let config = await ctx.prisma.componentConfig.findUnique(where)
-
-      if (!config) {
-        try {
-          config = await ctx.prisma.componentConfig.create({
-            data: {
-              workspaceId: input.workspaceId,
-              componentName: input.componentName,
-              props: {},
-              githubFilePath: null,
-              status: 'PENDING_ADD',
-            },
-          })
-        } catch (err) {
-          // Race condition: another request created it first
-          if (
-            err instanceof Prisma.PrismaClientKnownRequestError &&
-            err.code === 'P2002'
-          ) {
-            config = await ctx.prisma.componentConfig.findUnique(where)
-          } else {
-            throw err
-          }
-        }
-      }
-
-      if (!config) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Component configuration not found.',
-        })
-      }
-
-      return config
-    }),
-
-  // ── E-4: List presets for a component ───────────────────────────────────
-  listPresets: protectedProcedure
-    .input(listPresetsSchema)
-    .query(async ({ ctx, input }) => {
-      await assertMember(ctx.prisma, input.workspaceId, ctx.user.id)
-
-      const config = await ctx.prisma.componentConfig.findUnique({
-        where: {
-          workspaceId_componentName: {
-            workspaceId: input.workspaceId,
-            componentName: input.componentName,
-          },
-        },
-      })
-
-      if (!config) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Component configuration not found.',
-        })
-      }
-
-      return ctx.prisma.componentPreset.findMany({
-        where: {
-          workspaceId: input.workspaceId,
-          componentConfigId: config.id,
-        },
-        orderBy: { createdAt: 'asc' },
-      })
-    }),
-
-  // ── E-4: Save a named preset ─────────────────────────────────────────────
-  createPreset: protectedProcedure
-    .input(createPresetSchema)
-    .mutation(async ({ ctx, input }) => {
-      await assertMember(ctx.prisma, input.workspaceId, ctx.user.id)
-
-      const config = await ctx.prisma.componentConfig.findUnique({
-        where: {
-          workspaceId_componentName: {
-            workspaceId: input.workspaceId,
-            componentName: input.componentName,
-          },
-        },
-      })
-
-      if (!config) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Component configuration not found.',
-        })
-      }
-
-      return ctx.prisma.componentPreset.create({
-        data: {
-          workspaceId: input.workspaceId,
-          componentConfigId: config.id,
-          name: input.name,
-          values: input.values as Prisma.InputJsonValue,
-        },
-      })
-    }),
+    // List all component configs for the workspace (component browser)
+    listAll: protectedProcedure
+        .input(z.object({ workspaceId: z.string() }))
+        .query(async ({ ctx, input }) => {
+            await assertMember(input.workspaceId, ctx.user.id)
+            return ctx.prisma.componentConfig.findMany({
+                where: { workspaceId: input.workspaceId },
+                orderBy: { componentName: 'asc' },
+            })
+        }),
 })

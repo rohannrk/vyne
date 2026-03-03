@@ -29,12 +29,13 @@ model Workspace {
 }
 
 model WorkspaceUser {
-  id          String    @id @default(cuid())
-  workspaceId String
-  userId      String
-  role        Role      @default(VIEWER)
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
-  user        User      @relation(fields: [userId], references: [id])
+  id            String    @id @default(cuid())
+  workspaceId   String
+  userId        String
+  role          Role      @default(VIEWER)
+  lastVisitedAt DateTime?
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+  user          User      @relation(fields: [userId], references: [id])
 }
 
 model GitHubConnection {

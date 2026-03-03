@@ -1,113 +1,35 @@
-'use client'
-
 import { create } from 'zustand'
-import type { ComponentProps } from '@/types/index.d.ts'
 
-type Theme = 'light' | 'dark'
+export type CanvasTheme = 'dark' | 'light'
 
-type EditorState = {
-  selectedComponent: string | null
-  activePresetId: string | null
-  theme: Theme
-  isPanelOpen: boolean
-  hasUnsavedChanges: boolean
-  baselineProps: ComponentProps | null
-  currentProps: ComponentProps | null
-  setSelectedComponent: (component: string) => void
-  setActivePresetId: (presetId: string | null) => void
-  setTheme: (theme: Theme) => void
-  toggleTheme: () => void
-  setPanelOpen: (open: boolean) => void
-  togglePanel: () => void
-  setBaselineProps: (props: ComponentProps) => void
-  setCurrentProps: (props: ComponentProps) => void
-  applyPreset: (props: ComponentProps, presetId: string) => void
-}
+interface EditorState {
+    // Canvas
+    canvasTheme: CanvasTheme
+    setCanvasTheme: (theme: CanvasTheme) => void
 
-function areComponentPropsEqual(a: ComponentProps, b: ComponentProps): boolean {
-  return (
-    a.variant === b.variant &&
-    a.size === b.size &&
-    a.shape === b.shape &&
-    a.label === b.label &&
-    a.disabled === b.disabled &&
-    a.isLoading === b.isLoading &&
-    a.borderRadius === b.borderRadius &&
-    a.paddingX === b.paddingX &&
-    a.paddingY === b.paddingY &&
-    a.gap === b.gap &&
-    a.fontSize === b.fontSize &&
-    a.fontWeight === b.fontWeight &&
-    a.letterSpacing === b.letterSpacing &&
-    a.opacity === b.opacity &&
-    a.shadow === b.shadow
-  )
+    // Panel
+    isPanelOpen: boolean
+    togglePanel: () => void
+
+    // Presets
+    activePresetId: string | null
+    setActivePresetId: (id: string | null) => void
+
+    // Unsaved state
+    isDirty: boolean
+    setIsDirty: (dirty: boolean) => void
 }
 
 export const useEditorStore = create<EditorState>((set) => ({
-  selectedComponent: null,
-  activePresetId: null,
-  theme: 'light',
-  isPanelOpen: true,
-  hasUnsavedChanges: false,
-  baselineProps: null,
-  currentProps: null,
+    canvasTheme: 'dark',
+    setCanvasTheme: (theme) => set({ canvasTheme: theme }),
 
-  setSelectedComponent: (component) =>
-    set({
-      selectedComponent: component,
-      activePresetId: null,
-      baselineProps: null,
-      currentProps: null,
-      hasUnsavedChanges: false,
-    }),
+    isPanelOpen: true,
+    togglePanel: () => set((s) => ({ isPanelOpen: !s.isPanelOpen })),
 
-  setActivePresetId: (presetId) =>
-    set({
-      activePresetId: presetId,
-    }),
+    activePresetId: null,
+    setActivePresetId: (id) => set({ activePresetId: id }),
 
-  setTheme: (theme) =>
-    set({
-      theme,
-    }),
-
-  toggleTheme: () =>
-    set((state) => ({
-      theme: state.theme === 'light' ? 'dark' : 'light',
-    })),
-
-  setPanelOpen: (open) =>
-    set({
-      isPanelOpen: open,
-    }),
-
-  togglePanel: () =>
-    set((state) => ({
-      isPanelOpen: !state.isPanelOpen,
-    })),
-
-  setBaselineProps: (props) =>
-    set((state) => ({
-      baselineProps: props,
-      currentProps: state.currentProps ?? props,
-      hasUnsavedChanges:
-        state.currentProps != null && !areComponentPropsEqual(props, state.currentProps),
-    })),
-
-  setCurrentProps: (props) =>
-    set((state) => ({
-      currentProps: props,
-      hasUnsavedChanges:
-        state.baselineProps != null && !areComponentPropsEqual(state.baselineProps, props),
-    })),
-
-  applyPreset: (props, presetId) =>
-    set(() => ({
-      baselineProps: props,
-      currentProps: props,
-      activePresetId: presetId,
-      hasUnsavedChanges: false,
-    })),
+    isDirty: false,
+    setIsDirty: (dirty) => set({ isDirty: dirty }),
 }))
-

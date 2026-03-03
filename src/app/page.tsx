@@ -9,15 +9,15 @@ export default async function RootPage() {
     redirect('/login')
   }
 
-  const workspaceUser = await prisma.workspaceUser.findFirst({
+  // Check if the user has any workspaces at all
+  const count = await prisma.workspaceUser.count({
     where: { userId: session.user.id },
-    include: { workspace: true },
-    orderBy: { workspace: { createdAt: 'asc' } },
   })
 
-  if (!workspaceUser) {
+  if (count === 0) {
     redirect('/onboarding')
   }
 
-  redirect(`/${workspaceUser.workspaceId}`)
+  // Always go through the workspace hub — consistent entry point for all users
+  redirect('/workspaces')
 }
