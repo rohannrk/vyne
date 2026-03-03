@@ -1,5 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from '@/server/trpc'
 import { createWorkspaceSchema } from '@/types/schemas/workspace.schemas'
+import { SHADCN_COMPONENTS } from '@/lib/config'
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
@@ -16,6 +17,19 @@ export const workspaceRouter = createTRPCRouter({
           },
         },
       })
+
+      // Bootstrap ComponentConfig rows for all supported components in this workspace
+      await ctx.prisma.componentConfig.createMany({
+        data: SHADCN_COMPONENTS.map((component) => ({
+          workspaceId: workspace.id,
+          componentName: component.name,
+          props: {},
+          githubFilePath: null,
+          status: 'PENDING_ADD',
+        })),
+        skipDuplicates: true,
+      })
+
       return workspace
     }),
 
