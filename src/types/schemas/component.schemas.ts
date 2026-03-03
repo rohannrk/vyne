@@ -28,6 +28,18 @@ export const getComponentSchema = z.object({
   componentName: componentNameSchema,
 })
 
+export const listPresetsSchema = z.object({
+  workspaceId:   z.string().cuid(),
+  componentName: componentNameSchema,
+})
+
+export const createPresetSchema = z.object({
+  workspaceId:   z.string().cuid(),
+  componentName: componentNameSchema,
+  name:          z.string().min(1),
+  values:        componentPropsSchema,
+})
+
 export const updateComponentPropsSchema = z.object({
   workspaceId:   z.string().cuid(),
   componentName: componentNameSchema,
