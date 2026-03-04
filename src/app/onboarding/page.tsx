@@ -23,13 +23,13 @@ export default async function OnboardingPage() {
       <StepIndicator current={1} total={4} />
 
       <div>
-        <h2 className="text-xl font-semibold text-[var(--text-primary)]">Create your workspace</h2>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">
+        <h2 className="text-xl font-semibold text-[var(--text-bright)]">Create your workspace</h2>
+        <p className="mt-1 text-sm text-[var(--text)]">
           Give your workspace a name — you can change it later.
         </p>
       </div>
 
-      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-6">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-raised)] p-6">
         <CreateWorkspaceForm />
       </div>
     </div>
@@ -42,12 +42,12 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
       {Array.from({ length: total }).map((_, i) => (
         <div key={i} className="flex items-center gap-2">
           <div
-            className={`h-1.5 w-6 rounded-full transition-colors ${i + 1 <= current ? 'bg-[var(--brand)]' : 'bg-[var(--border-subtle)]'
+            className={`h-1.5 w-6 rounded-full transition-colors ${i + 1 <= current ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
               }`}
           />
         </div>
       ))}
-      <span className="ml-1 text-xs text-[var(--text-tertiary)]">
+      <span className="ml-1 text-xs text-[var(--text-dim)]">
         Step {current} of {total}
       </span>
     </div>

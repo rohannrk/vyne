@@ -58,7 +58,7 @@ export default async function WorkspaceLayout({ children, params }: WorkspaceLay
     }))
 
     return (
-        <div className="flex h-screen overflow-hidden bg-[var(--surface-base)]">
+        <div className="flex h-screen overflow-hidden bg-[var(--bg)]">
             <Sidebar
                 workspaceId={workspaceId}
                 workspaceName={workspaceUser.workspace.name}

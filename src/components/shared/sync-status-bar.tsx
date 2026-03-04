@@ -43,7 +43,7 @@ export function SyncStatusBar({ workspaceId, status, lastPulledAt, errorType }: 
     return (
         <div
             className={cn(
-                'flex items-center gap-3 border-b border-[var(--border-subtle)] px-4 py-2 text-xs',
+                'flex items-center gap-3 border-b border-[var(--border)] px-4 py-2 text-xs',
                 errorType === 'auth' && 'bg-[var(--status-error)]/8',
                 errorType === 'not-found' && 'bg-[var(--status-modified)]/8',
             )}
@@ -54,7 +54,7 @@ export function SyncStatusBar({ workspaceId, status, lastPulledAt, errorType }: 
                 {status === 'disconnected' && <span className="h-1.5 w-1.5 rounded-full bg-[var(--status-error)]" />}
                 {status === 'error' && <span className="h-1.5 w-1.5 rounded-full bg-[var(--status-modified)]" />}
 
-                <span className="text-[var(--text-tertiary)]">
+                <span className="text-[var(--text-dim)]">
                     {status === 'connected' && 'GitHub connected'}
                     {status === 'disconnected' && 'GitHub disconnected'}
                     {status === 'error' && 'Sync error'}
@@ -63,7 +63,7 @@ export function SyncStatusBar({ workspaceId, status, lastPulledAt, errorType }: 
 
             {/* Last sync timestamp */}
             {status === 'connected' && lastPulledAt && (
-                <span className="text-[var(--text-tertiary)]">
+                <span className="text-[var(--text-dim)]">
                     · Last synced: {formatRelativeTime(lastPulledAt)}
                 </span>
             )}
@@ -83,7 +83,7 @@ export function SyncStatusBar({ workspaceId, status, lastPulledAt, errorType }: 
                 </span>
             )}
             {errorType === 'transient' && (
-                <span className="text-[var(--text-secondary)]">
+                <span className="text-[var(--text)]">
                     GitHub is temporarily unavailable
                 </span>
             )}
@@ -107,7 +107,7 @@ export function SyncStatusBar({ workspaceId, status, lastPulledAt, errorType }: 
                 <button
                     onClick={handlePullNow}
                     disabled={isPending}
-                    className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[var(--text-tertiary)] transition-colors hover:bg-[var(--surface-overlay)] hover:text-[var(--text-primary)] disabled:opacity-50"
+                    className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[var(--text-dim)] transition-colors hover:bg-[var(--bg-row)] hover:text-[var(--text-bright)] disabled:opacity-50"
                 >
                     <RefreshCw className={cn('h-3 w-3', isPending && 'animate-spin')} />
                     {errorType === 'transient' ? 'Retry' : 'Pull now'}

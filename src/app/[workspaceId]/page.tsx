@@ -84,18 +84,18 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
             {/* No GitHub connection state */}
             {!connection ? (
                 <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]">
-                        <GitBranch className="h-6 w-6 text-[var(--text-tertiary)]" />
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-raised)]">
+                        <GitBranch className="h-6 w-6 text-[var(--text-dim)]" />
                     </div>
                     <div className="text-center">
-                        <p className="text-sm font-medium text-[var(--text-primary)]">GitHub not connected</p>
-                        <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                        <p className="text-sm font-medium text-[var(--text-bright)]">GitHub not connected</p>
+                        <p className="mt-1 text-sm text-[var(--text)]">
                             Connect your repository to start managing components
                         </p>
                     </div>
                     <a
                         href="/onboarding/connect-github"
-                        className="rounded-md bg-[var(--brand)] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                        className="rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
                     >
                         Connect GitHub
                     </a>
@@ -105,8 +105,8 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
                 <div className="flex-1 overflow-y-auto p-6">
                     <div className="mb-6 flex items-center justify-between">
                         <div>
-                            <h1 className="text-lg font-semibold text-[var(--text-primary)]">Components</h1>
-                            <p className="mt-0.5 text-sm text-[var(--text-secondary)]">
+                            <h1 className="text-lg font-semibold text-[var(--text-bright)]">Components</h1>
+                            <p className="mt-0.5 text-sm text-[var(--text)]">
                                 {connection.repoOwner}/{connection.repoName} · {connection.branch}
                             </p>
                         </div>
@@ -115,7 +115,7 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
                     <div className="space-y-8">
                         {Object.entries(grouped).map(([category, items]) => (
                             <section key={category}>
-                                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+                                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-dim)]">
                                     {category}
                                 </h2>
                                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

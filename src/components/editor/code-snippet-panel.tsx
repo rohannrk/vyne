@@ -11,14 +11,14 @@ interface CodeSnippetPanelProps {
 }
 
 const TOKEN_COLORS: Record<string, string> = {
-    keyword: 'text-[var(--brand)]',
-    component: 'text-[var(--text-primary)] font-semibold',
+    keyword: 'text-[var(--accent)]',
+    component: 'text-[var(--text-bright)] font-semibold',
     prop: 'text-[oklch(0.72_0.19_160)]',   // teal for prop names
     string: 'text-[var(--status-synced)]',  // green for string values
-    number: 'text-[var(--brand)]',           // violet for numbers
+    number: 'text-[var(--accent)]',           // violet for numbers
     boolean: 'text-[oklch(0.75_0.15_30)]',  // amber for booleans
-    punctuation: 'text-[var(--text-tertiary)]',
-    comment: 'text-[var(--text-tertiary)] italic',
+    punctuation: 'text-[var(--text-dim)]',
+    comment: 'text-[var(--text-dim)] italic',
 }
 
 export function CodeSnippetPanel({ componentName, snippet }: CodeSnippetPanelProps) {
@@ -27,8 +27,8 @@ export function CodeSnippetPanel({ componentName, snippet }: CodeSnippetPanelPro
     return (
         <div className="flex flex-col h-full">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border-subtle)] flex-shrink-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border)] flex-shrink-0">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-dim)]">
                     Code Snippet
                 </p>
                 <button
@@ -37,7 +37,7 @@ export function CodeSnippetPanel({ componentName, snippet }: CodeSnippetPanelPro
                         'flex items-center gap-1 rounded px-2 py-1 text-[10px] font-medium transition-all',
                         copied
                             ? 'bg-[var(--status-synced)]/15 text-[var(--status-synced)]'
-                            : 'text-[var(--text-secondary)] hover:bg-[var(--surface-overlay)] hover:text-[var(--text-primary)]',
+                            : 'text-[var(--text)] hover:bg-[var(--bg-row)] hover:text-[var(--text-bright)]',
                     )}
                     aria-label="Copy code snippet to clipboard"
                 >
@@ -67,7 +67,7 @@ export function CodeSnippetPanel({ componentName, snippet }: CodeSnippetPanelPro
                         {snippet.tokens.map((token, i) => (
                             <span
                                 key={i}
-                                className={TOKEN_COLORS[token.type] ?? 'text-[var(--text-secondary)]'}
+                                className={TOKEN_COLORS[token.type] ?? 'text-[var(--text)]'}
                             >
                                 {token.value}
                             </span>
