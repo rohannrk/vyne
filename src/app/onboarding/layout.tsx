@@ -4,13 +4,13 @@ export default function OnboardingLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--surface-base)] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] px-4">
       {/* Subtle grid background */}
       <div
         className="pointer-events-none fixed inset-0 opacity-[0.03]"
         style={{
           backgroundImage:
-            'linear-gradient(var(--text-primary) 1px, transparent 1px), linear-gradient(90deg, var(--text-primary) 1px, transparent 1px)',
+            'linear-gradient(var(--text-bright) 1px, transparent 1px), linear-gradient(90deg, var(--text-bright) 1px, transparent 1px)',
           backgroundSize: '48px 48px',
         }}
         aria-hidden="true"
@@ -18,10 +18,10 @@ export default function OnboardingLayout({
       <div className="relative w-full max-w-md py-12">
         {/* Logo */}
         <div className="mb-8 flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand)]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent)]">
             <span className="text-sm font-bold text-white">V</span>
           </div>
-          <span className="text-lg font-bold text-[var(--text-primary)]">VYNE</span>
+          <span className="text-lg font-bold text-[var(--text-bright)]">VYNE</span>
         </div>
         {children}
       </div>

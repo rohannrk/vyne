@@ -11,7 +11,7 @@ import {
     ChevronRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { StatusBadge, type ComponentStatus } from '@/components/shared/status-badge'
+import { type ComponentStatus } from '@/components/shared/status-badge'
 import { WorkspaceSwitcher } from '@/components/shared/workspace-switcher'
 import { SHADCN_COMPONENTS } from '@/lib/config'
 import { useState } from 'react'
@@ -66,9 +66,9 @@ export function Sidebar({
         setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }))
 
     return (
-        <aside className="flex h-screen w-[220px] flex-shrink-0 flex-col border-r border-[var(--border-subtle)] bg-[var(--sidebar)]">
+        <aside className="flex h-screen w-[172px] flex-shrink-0 flex-col border-r border-[var(--border)] bg-[var(--sidebar)]">
             {/* Workspace switcher header */}
-            <div className="flex h-12 items-center border-b border-[var(--border-subtle)] px-3">
+            <div className="flex h-[44px] items-center border-b border-[var(--border)] px-3">
                 <WorkspaceSwitcher
                     currentWorkspaceId={workspaceId}
                     currentWorkspaceName={workspaceName}
@@ -77,7 +77,7 @@ export function Sidebar({
             </div>
 
             {/* Nav */}
-            <nav className="flex-1 overflow-y-auto py-3">
+            <nav className="flex-1 overflow-y-auto py-[18px]">
                 {/* Component Browser link */}
                 <div className="px-2 pb-1">
                     <Link
@@ -85,8 +85,8 @@ export function Sidebar({
                         className={cn(
                             'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors duration-150',
                             pathname === `/${workspaceId}`
-                                ? 'bg-[var(--brand-subtle)] text-[var(--brand)]'
-                                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]',
+                                ? 'bg-white/[0.035] text-[var(--text-bright)] font-medium'
+                                : 'text-[var(--text-dim)] hover:bg-white/[0.02] font-normal',
                         )}
                     >
                         <LayoutGrid className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
@@ -94,14 +94,14 @@ export function Sidebar({
                     </Link>
                 </div>
 
-                <div className="my-2 border-t border-[var(--border-subtle)]" />
+                <div className="my-2 border-t border-[var(--border)]" />
 
                 {/* Component categories */}
                 {Object.entries(grouped).map(([category, items]) => (
                     <div key={category} className="px-2">
                         <button
                             onClick={() => toggleCategory(category)}
-                            className="flex w-full items-center gap-1 px-2 py-1 text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
+                            className="flex w-full items-center gap-1 px-2 py-1 text-[11px] font-medium uppercase tracking-wider text-[var(--text)] opacity-70 hover:opacity-100 transition-opacity"
                             aria-expanded={!collapsed[category]}
                         >
                             {collapsed[category] ? (
@@ -124,12 +124,11 @@ export function Sidebar({
                                                 className={cn(
                                                     'flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors duration-150',
                                                     isActive
-                                                        ? 'bg-[var(--brand-subtle)] text-[var(--brand)]'
-                                                        : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]',
+                                                        ? 'bg-white/[0.035] text-[var(--text-bright)] font-medium'
+                                                        : 'text-[var(--text-dim)] hover:bg-white/[0.02] font-normal',
                                                 )}
                                             >
                                                 <span className="truncate">{item.displayName}</span>
-                                                <StatusBadge status={item.status} dotOnly />
                                             </Link>
                                         </li>
                                     )
@@ -141,14 +140,14 @@ export function Sidebar({
             </nav>
 
             {/* Bottom: settings + logout */}
-            <div className="border-t border-[var(--border-subtle)] px-2 py-3 space-y-px">
+            <div className="border-t border-[var(--border)] px-2 py-3 space-y-px">
                 <Link
                     href={`/${workspaceId}/settings`}
                     className={cn(
                         'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors duration-150',
                         pathname === `/${workspaceId}/settings`
-                            ? 'bg-[var(--brand-subtle)] text-[var(--brand)]'
-                            : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]',
+                            ? 'bg-white/[0.035] text-[var(--text-bright)] font-medium'
+                            : 'text-[var(--text-dim)] hover:bg-white/[0.02] font-normal',
                     )}
                 >
                     <Settings className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
@@ -157,7 +156,7 @@ export function Sidebar({
 
                 <button
                     onClick={() => signOut({ callbackUrl: '/login' })}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-[var(--text-secondary)] transition-colors duration-150 hover:bg-[var(--surface-raised)] hover:text-[var(--status-error)]"
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-[var(--status-error)] transition-colors duration-150 hover:bg-[var(--status-error)]/10"
                     id="sidebar-logout-btn"
                 >
                     <LogOut className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
@@ -166,7 +165,7 @@ export function Sidebar({
 
                 {/* User avatar */}
                 {userName && (
-                    <div className="flex items-center gap-2 px-2 pt-2 mt-1 border-t border-[var(--border-subtle)]">
+                    <div className="flex items-center gap-2 px-2 pt-2 mt-1 border-t border-[var(--border)]">
                         {userImage ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -175,13 +174,13 @@ export function Sidebar({
                                 className="h-6 w-6 rounded-full flex-shrink-0"
                             />
                         ) : (
-                            <div className="h-6 w-6 rounded-full bg-[var(--brand-subtle)] flex items-center justify-center flex-shrink-0">
-                                <span className="text-[10px] font-medium text-[var(--brand)]">
+                            <div className="h-6 w-6 rounded-full bg-[var(--accent-muted-bg)] flex items-center justify-center flex-shrink-0">
+                                <span className="text-[10px] font-medium text-[var(--accent)]">
                                     {userName[0]?.toUpperCase()}
                                 </span>
                             </div>
                         )}
-                        <span className="truncate text-xs text-[var(--text-tertiary)]">{userName}</span>
+                        <span className="truncate text-xs text-[var(--text-dim)]">{userName}</span>
                     </div>
                 )}
             </div>

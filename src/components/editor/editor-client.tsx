@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { ArrowLeft, RotateCcw, GitPullRequest, Settings2, Sun, Moon, Save, Trash2 } from 'lucide-react'
+import { ArrowLeft, RotateCcw, GitPullRequest, Settings2, Sun, Moon, Save, Trash2, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { StatusBadge } from '@/components/shared/status-badge'
 import { CodeSnippetPanel } from '@/components/editor/code-snippet-panel'
@@ -46,7 +46,17 @@ interface Props {
     componentConfigId?: string
 }
 
-// Slider control component
+// PanelRow Wrapper
+function PanelRow({ label, children, last }: { label: string; children: React.ReactNode; last?: boolean }) {
+    return (
+        <div className={cn("flex items-center justify-between h-[var(--row-height)] px-[14px]", !last && "border-b border-[var(--border)]")}>
+            <span className="text-[12px] text-[var(--text-dim)] flex-shrink-0">{label}</span>
+            <div className="flex-1 flex justify-end items-center">{children}</div>
+        </div>
+    )
+}
+
+// Slider component
 function SliderControl({
     label,
     value,
@@ -54,6 +64,7 @@ function SliderControl({
     max,
     unit = '',
     onChange,
+    last
 }: {
     label: string
     value: number
@@ -61,12 +72,16 @@ function SliderControl({
     max: number
     unit?: string
     onChange: (v: number) => void
+    last?: boolean
 }) {
     return (
-        <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-                <label className="text-[11px] text-[var(--text-tertiary)]">{label}</label>
-                <span className="text-[11px] font-mono text-[var(--text-secondary)] tabular-nums">
+        <div className={cn("relative flex items-center h-[var(--row-height)] px-[14px]", !last && "border-b border-[var(--border)]")}>
+            <div className="absolute inset-x-0 h-full overflow-hidden pointer-events-none">
+                <div className="h-full bg-[var(--bg-slider)] transition-all" style={{ width: `${Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100))}%` }} />
+            </div>
+            <span className="relative z-10 text-[12px] text-[var(--text-dim)] w-[80px] flex-shrink-0 pointer-events-none">{label}</span>
+            <div className="relative z-10 flex-1 flex items-center justify-end pointer-events-none">
+                <span className="text-[12px] text-[var(--text-soft)] font-variant-numeric tabular-nums font-mono text-right">
                     {value}{unit}
                 </span>
             </div>
@@ -76,37 +91,42 @@ function SliderControl({
                 max={max}
                 value={value}
                 onChange={(e) => onChange(Number(e.target.value))}
-                className="w-full h-1 appearance-none rounded-full bg-[var(--surface-overlay)] accent-[var(--brand)] cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20"
                 aria-label={`${label}: ${value}${unit}`}
             />
         </div>
     )
 }
 
-// Select control component
+// Select component
 function SelectControl({
     label,
     value,
     options,
     onChange,
+    last
 }: {
     label: string
     value: string
     options: string[]
     onChange: (v: string) => void
+    last?: boolean
 }) {
     return (
-        <div className="space-y-1">
-            <label className="text-[11px] text-[var(--text-tertiary)]">{label}</label>
-            <select
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                className="w-full rounded-md border border-[var(--border-subtle)] bg-[var(--surface-base)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-            >
-                {options.map((o) => (
-                    <option key={o} value={o}>{o}</option>
-                ))}
-            </select>
+        <div className={cn("relative flex items-center justify-between h-[var(--row-height)] px-[14px]", !last && "border-b border-[var(--border)]")}>
+            <span className="text-[12px] text-[var(--text-dim)]">{label}</span>
+            <div className="relative flex items-center">
+                <select
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    className="appearance-none bg-transparent text-[12px] text-[var(--text-soft)] pr-4 pl-2 py-1 cursor-pointer focus:outline-none text-right hover:bg-white/[0.05] rounded transition-colors"
+                >
+                    {options.map((o) => (
+                        <option key={o} value={o} className="bg-[var(--bg-raised)] text-[var(--text-soft)]">{o}</option>
+                    ))}
+                </select>
+                <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 h-3 w-3 text-[var(--border-muted)] pointer-events-none" />
+            </div>
         </div>
     )
 }
@@ -116,31 +136,36 @@ function ToggleControl({
     label,
     value,
     onChange,
+    last
 }: {
     label: string
     value: boolean
     onChange: (v: boolean) => void
+    last?: boolean
 }) {
     return (
-        <div className="flex items-center justify-between">
-            <label className="text-[11px] text-[var(--text-tertiary)]">{label}</label>
-            <button
-                role="switch"
-                aria-checked={value}
-                onClick={() => onChange(!value)}
-                className={cn(
-                    'relative h-4 w-7 rounded-full transition-colors',
-                    value ? 'bg-[var(--brand)]' : 'bg-[var(--surface-overlay)]',
-                )}
-            >
-                <span
+        <PanelRow label={label} last={last}>
+            <div className="flex items-center rounded-sm border border-[var(--border)] p-0.5 overflow-hidden">
+                <button
+                    onClick={() => onChange(false)}
                     className={cn(
-                        'absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-transform',
-                        value ? 'translate-x-3.5' : 'translate-x-0.5',
+                        "px-2 py-0.5 text-[11px] font-medium transition-colors outline-none",
+                        !value ? "bg-[var(--bg-row)] text-[var(--text)] rounded-sm" : "bg-transparent text-[var(--text-dim)] hover:bg-white/[0.05]"
                     )}
-                />
-            </button>
-        </div>
+                >
+                    Off
+                </button>
+                <button
+                    onClick={() => onChange(true)}
+                    className={cn(
+                        "px-2 py-0.5 text-[11px] font-medium transition-colors outline-none",
+                        value ? "bg-[var(--bg-row)] text-[var(--text)] rounded-sm" : "bg-transparent text-[var(--text-dim)] hover:bg-white/[0.05]"
+                    )}
+                >
+                    On
+                </button>
+            </div>
+        </PanelRow>
     )
 }
 
@@ -149,21 +174,23 @@ function TextControl({
     label,
     value,
     onChange,
+    last
 }: {
     label: string
     value: string
     onChange: (v: string) => void
+    last?: boolean
 }) {
     return (
-        <div className="space-y-1">
-            <label className="text-[11px] text-[var(--text-tertiary)]">{label}</label>
+        <PanelRow label={label} last={last}>
             <input
                 type="text"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full rounded-md border border-[var(--border-subtle)] bg-[var(--surface-base)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                className="w-24 bg-transparent text-right text-[12px] text-[var(--text-soft)] focus:outline-none focus:text-[var(--text-bright)] placeholder:text-[var(--text-muted)]"
+                placeholder="..."
             />
-        </div>
+        </PanelRow>
     )
 }
 
@@ -191,9 +218,9 @@ function LivePreview({ componentName, config }: { componentName: string; config:
                     className={cn(
                         'flex items-center font-medium text-white transition-opacity',
                         config.variant === 'destructive' ? 'bg-[var(--status-error)]' :
-                            config.variant === 'outline' ? 'border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)]' :
-                                config.variant === 'ghost' ? 'bg-transparent text-[var(--text-primary)] hover:bg-[var(--surface-overlay)]' :
-                                    'bg-[var(--brand)]',
+                            config.variant === 'outline' ? 'border border-[var(--border)] bg-transparent text-[var(--text-bright)]' :
+                                config.variant === 'ghost' ? 'bg-transparent text-[var(--text-bright)] hover:bg-[var(--bg-row)]' :
+                                    'bg-[var(--accent)]',
                         config.disabled && 'opacity-50 cursor-not-allowed',
                         config.isLoading && 'cursor-wait',
                     )}
@@ -212,7 +239,7 @@ function LivePreview({ componentName, config }: { componentName: string; config:
                     placeholder={config.label ?? 'Type something…'}
                     disabled={config.disabled}
                     style={{ ...style, width: '200px' }}
-                    className="border border-[var(--border-subtle)] bg-[var(--surface-base)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                    className="border border-[var(--border)] bg-[var(--bg)] text-[var(--text-bright)] placeholder:text-[var(--text-dim)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
             )
 
@@ -223,7 +250,7 @@ function LivePreview({ componentName, config }: { componentName: string; config:
                     disabled={config.disabled}
                     rows={3}
                     style={{ ...style, width: '220px' }}
-                    className="border border-[var(--border-subtle)] bg-[var(--surface-base)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)] resize-none"
+                    className="border border-[var(--border)] bg-[var(--bg)] text-[var(--text-bright)] placeholder:text-[var(--text-dim)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] resize-none"
                 />
             )
 
@@ -232,13 +259,13 @@ function LivePreview({ componentName, config }: { componentName: string; config:
                 <label className="flex items-center cursor-pointer" style={{ gap: style.gap }}>
                     <span className={cn(
                         'flex h-4 w-4 items-center justify-center border-2 transition-colors',
-                        config.disabled ? 'border-[var(--border-subtle)] opacity-50' : 'border-[var(--brand)] bg-[var(--brand)]',
+                        config.disabled ? 'border-[var(--border)] opacity-50' : 'border-[var(--accent)] bg-[var(--accent)]',
                     )} style={{ borderRadius: style.borderRadius }}>
                         <svg viewBox="0 0 10 10" className="h-2.5 w-2.5 text-white fill-none stroke-white stroke-2">
                             <path d="M1.5 5l2.5 2.5 4.5-4.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </span>
-                    <span className="text-[var(--text-primary)]" style={{ fontSize: style.fontSize, fontWeight: style.fontWeight }}>
+                    <span className="text-[var(--text-bright)]" style={{ fontSize: style.fontSize, fontWeight: style.fontWeight }}>
                         {config.label ?? 'Accept terms'}
                     </span>
                 </label>
@@ -247,10 +274,10 @@ function LivePreview({ componentName, config }: { componentName: string; config:
         case 'switch':
             return (
                 <label className="flex items-center cursor-pointer" style={{ gap: style.gap }}>
-                    <span className="flex h-5 w-9 items-center rounded-full bg-[var(--brand)] px-0.5" style={{ opacity: config.disabled ? 0.5 : 1 }}>
+                    <span className="flex h-5 w-9 items-center rounded-full bg-[var(--accent)] px-0.5" style={{ opacity: config.disabled ? 0.5 : 1 }}>
                         <span className="h-4 w-4 translate-x-4 rounded-full bg-white shadow" />
                     </span>
-                    <span className="text-[var(--text-primary)]" style={{ fontSize: style.fontSize }}>
+                    <span className="text-[var(--text-bright)]" style={{ fontSize: style.fontSize }}>
                         {config.label ?? 'Enable feature'}
                     </span>
                 </label>
@@ -259,9 +286,9 @@ function LivePreview({ componentName, config }: { componentName: string; config:
         case 'slider':
             return (
                 <div style={{ width: '180px', opacity: style.opacity }}>
-                    <div className="relative h-1.5 rounded-full bg-[var(--surface-overlay)]">
-                        <div className="absolute inset-y-0 left-0 w-2/3 rounded-full bg-[var(--brand)]" />
-                        <div className="absolute top-1/2 left-2/3 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-[var(--brand)] bg-[var(--surface-base)] shadow" />
+                    <div className="relative h-1.5 rounded-full bg-[var(--bg-row)]">
+                        <div className="absolute inset-y-0 left-0 w-2/3 rounded-full bg-[var(--accent)]" />
+                        <div className="absolute top-1/2 left-2/3 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-[var(--accent)] bg-[var(--bg)] shadow" />
                     </div>
                 </div>
             )
@@ -270,7 +297,7 @@ function LivePreview({ componentName, config }: { componentName: string; config:
             return (
                 <span
                     style={style}
-                    className="inline-flex items-center font-medium bg-[var(--brand-subtle)] border border-[var(--brand)]/30 text-[var(--brand)]"
+                    className="inline-flex items-center font-medium bg-[var(--accent-muted-bg)] border border-[var(--accent)]/30 text-[var(--accent)]"
                 >
                     {config.label ?? 'Badge'}
                 </span>
@@ -279,8 +306,8 @@ function LivePreview({ componentName, config }: { componentName: string; config:
         case 'progress':
             return (
                 <div style={{ width: '200px', opacity: style.opacity }}>
-                    <div className="h-2 rounded-full bg-[var(--surface-overlay)]" style={{ borderRadius: style.borderRadius }}>
-                        <div className="h-full w-2/3 rounded-full bg-[var(--brand)]" style={{ borderRadius: style.borderRadius }} />
+                    <div className="h-2 rounded-full bg-[var(--bg-row)]" style={{ borderRadius: style.borderRadius }}>
+                        <div className="h-full w-2/3 rounded-full bg-[var(--accent)]" style={{ borderRadius: style.borderRadius }} />
                     </div>
                 </div>
             )
@@ -288,14 +315,14 @@ function LivePreview({ componentName, config }: { componentName: string; config:
         case 'skeleton':
             return (
                 <div className="space-y-2" style={{ opacity: style.opacity }}>
-                    <div className="h-3 w-40 animate-pulse rounded bg-[var(--surface-overlay)]" style={{ borderRadius: style.borderRadius }} />
-                    <div className="h-3 w-28 animate-pulse rounded bg-[var(--surface-overlay)]" style={{ borderRadius: style.borderRadius }} />
-                    <div className="h-3 w-36 animate-pulse rounded bg-[var(--surface-overlay)]" style={{ borderRadius: style.borderRadius }} />
+                    <div className="h-3 w-40 animate-pulse rounded bg-[var(--bg-row)]" style={{ borderRadius: style.borderRadius }} />
+                    <div className="h-3 w-28 animate-pulse rounded bg-[var(--bg-row)]" style={{ borderRadius: style.borderRadius }} />
+                    <div className="h-3 w-36 animate-pulse rounded bg-[var(--bg-row)]" style={{ borderRadius: style.borderRadius }} />
                 </div>
             )
 
         default:
-            return <p className="text-sm text-[var(--text-secondary)]">{componentName} preview</p>
+            return <p className="text-sm text-[var(--text)]">{componentName} preview</p>
     }
 }
 
@@ -352,17 +379,17 @@ export function EditorClient({
     return (
         <div className="flex h-full flex-col">
             {/* Editor header */}
-            <header className="flex h-12 items-center justify-between border-b border-[var(--border-subtle)] px-4 flex-shrink-0">
+            <header className="flex h-[var(--topbar-height)] items-center justify-between border-b border-[var(--border)] px-4 flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <Link
                         href={`/${workspaceId}`}
-                        className="flex items-center gap-1.5 text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)]"
+                        className="flex items-center gap-1.5 text-[var(--text)] opacity-70 transition-opacity hover:opacity-100"
                         aria-label="Back to Component Browser"
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </Link>
                     <div className="flex items-center gap-2">
-                        <h1 className="text-sm font-semibold text-[var(--text-primary)]">{displayName}</h1>
+                        <h1 className="text-sm font-semibold text-[var(--text-bright)]">{displayName}</h1>
                         <StatusBadge status={currentStatus} />
                     </div>
 
@@ -379,20 +406,20 @@ export function EditorClient({
                     {isDirty && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <button className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]">
+                                <button className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-[var(--text)] transition-colors hover:bg-[var(--bg-raised)]">
                                     <RotateCcw className="h-3.5 w-3.5" />
                                     Reset
                                 </button>
                             </AlertDialogTrigger>
-                            <AlertDialogContent className="bg-[var(--surface-raised)] border-[var(--border-subtle)]">
+                            <AlertDialogContent className="bg-[var(--bg-raised)] border-[var(--border)]">
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-[var(--text-primary)]">Reset changes?</AlertDialogTitle>
-                                    <AlertDialogDescription className="text-[var(--text-secondary)]">
+                                    <AlertDialogTitle className="text-[var(--text-bright)]">Reset changes?</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-[var(--text)]">
                                         This will discard all unsaved changes and restore to the last pulled values from GitHub.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                    <AlertDialogCancel className="border-[var(--border-subtle)]">Cancel</AlertDialogCancel>
+                                    <AlertDialogCancel className="border-[var(--border)]">Cancel</AlertDialogCancel>
                                     <AlertDialogAction onClick={handleReset} className="bg-[var(--status-error)] hover:opacity-90">
                                         Reset
                                     </AlertDialogAction>
@@ -404,7 +431,7 @@ export function EditorClient({
                     {isDirty && canPush && (
                         <button
                             onClick={() => setIsPushModalOpen(true)}
-                            className="flex items-center gap-1.5 rounded-md bg-[var(--brand)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90"
+                            className="flex items-center gap-1.5 rounded-md bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90"
                         >
                             <GitPullRequest className="h-3.5 w-3.5" />
                             Push to GitHub
@@ -416,14 +443,14 @@ export function EditorClient({
             {/* Editor body */}
             <div className="flex flex-1 overflow-hidden">
                 {/* Dial Kit panel */}
-                <div className="w-[228px] flex-shrink-0 border-r border-[var(--border-subtle)] bg-[var(--surface-raised)] overflow-y-auto flex flex-col">
+                <div className="w-[var(--panel-width)] flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg-raised)] overflow-y-auto flex flex-col">
                     {/* Presets */}
                     {componentConfigId && (
-                        <div className="px-3 py-2.5 border-b border-[var(--border-subtle)]">
-                            <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)] mb-2">
+                        <div className="border-b border-[var(--border)]">
+                            <button className="flex w-full items-center justify-between h-[var(--row-height-xl)] px-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-dim)]">
                                 Presets
-                            </p>
-                            <div className="space-y-1">
+                            </button>
+                            <div className="px-3 pb-3 space-y-1">
                                 {savedPresets.map((preset) => (
                                     <button
                                         key={preset.id}
@@ -434,8 +461,8 @@ export function EditorClient({
                                         className={cn(
                                             'w-full text-left rounded px-2 py-1 text-xs transition-colors',
                                             activePresetId === preset.id
-                                                ? 'bg-[var(--brand-subtle)] text-[var(--brand)]'
-                                                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-overlay)]',
+                                                ? 'bg-[var(--accent-muted-bg)] text-[var(--accent)]'
+                                                : 'text-[var(--text)] hover:bg-[var(--bg-row)]',
                                         )}
                                     >
                                         {preset.name}
@@ -448,7 +475,7 @@ export function EditorClient({
                                     value={presetName}
                                     onChange={(e) => setPresetName(e.target.value)}
                                     placeholder="Preset name…"
-                                    className="flex-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-base)] px-2 py-1 text-[11px] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                                    className="flex-1 rounded border border-[var(--border)] bg-[var(--bg)] px-2 py-1 text-[11px] text-[var(--text-bright)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                                 />
                                 <button
                                     onClick={async () => {
@@ -476,7 +503,7 @@ export function EditorClient({
                                             setPresetName('')
                                         }
                                     }}
-                                    className="rounded border border-[var(--border-subtle)] px-2 py-1 text-[11px] text-[var(--text-secondary)] hover:bg-[var(--surface-overlay)] transition-colors"
+                                    className="rounded border border-[var(--border)] px-2 py-1 text-[11px] text-[var(--text)] hover:bg-[var(--bg-row)] transition-colors"
                                 >
                                     <Save className="h-3 w-3" />
                                 </button>
@@ -485,11 +512,11 @@ export function EditorClient({
                     )}
 
                     {/* Code Properties */}
-                    <div className="px-3 py-2.5 border-b border-[var(--border-subtle)]">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)] mb-3">
+                    <div className="border-b border-[var(--border)]">
+                        <button className="flex w-full items-center justify-between h-[var(--row-height-xl)] px-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-dim)]">
                             Code Properties
-                        </p>
-                        <div className="space-y-3">
+                        </button>
+                        <div className="flex flex-col">
                             {defaults.variant !== undefined && (
                                 <SelectControl
                                     label="Variant"
@@ -539,11 +566,11 @@ export function EditorClient({
                     </div>
 
                     {/* Design Properties */}
-                    <div className="px-3 py-2.5">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)] mb-3">
+                    <div className="border-b border-[var(--border)]">
+                        <button className="flex w-full items-center justify-between h-[var(--row-height-xl)] px-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-dim)]">
                             Design Tokens
-                        </p>
-                        <div className="space-y-4">
+                        </button>
+                        <div className="flex flex-col">
                             {defaults.borderRadius !== undefined && (
                                 <SliderControl label="Border Radius" value={config.borderRadius ?? defaults.borderRadius ?? 8} min={0} max={48} unit="px" onChange={(v) => updateConfig({ borderRadius: v })} />
                             )}
@@ -584,27 +611,27 @@ export function EditorClient({
                 <div
                     className={cn(
                         'flex flex-1 items-center justify-center relative',
-                        canvasTheme === 'dark' ? 'bg-[var(--surface-base)]' : 'bg-white',
+                        canvasTheme === 'dark' ? 'bg-[var(--bg)]' : 'bg-white',
                     )}
                 >
                     {/* Canvas theme toggle */}
-                    <div className="absolute bottom-4 right-4 flex items-center gap-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-2 py-1">
+                    <div className="absolute bottom-4 right-4 flex items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--bg-raised)] px-2 py-1">
                         <button
                             onClick={() => setCanvasTheme('light')}
                             className={cn(
                                 'flex items-center gap-1 px-2 py-0.5 text-xs rounded transition-colors',
-                                canvasTheme === 'light' ? 'text-[var(--brand)] font-medium' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
+                                canvasTheme === 'light' ? 'bg-white/[0.05] text-[var(--text-bright)] font-medium' : 'text-[var(--text)] hover:bg-white/[0.02]',
                             )}
                         >
                             <Sun className="h-3 w-3" />
                             Light
                         </button>
-                        <div className="h-3 w-px bg-[var(--border-subtle)]" />
+                        <div className="h-3 w-px bg-[var(--border)]" />
                         <button
                             onClick={() => setCanvasTheme('dark')}
                             className={cn(
                                 'flex items-center gap-1 px-2 py-0.5 text-xs rounded transition-colors',
-                                canvasTheme === 'dark' ? 'text-[var(--brand)] font-medium' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
+                                canvasTheme === 'dark' ? 'bg-white/[0.05] text-[var(--text-bright)] font-medium' : 'text-[var(--text)] hover:bg-white/[0.02]',
                             )}
                         >
                             <Moon className="h-3 w-3" />
@@ -615,8 +642,8 @@ export function EditorClient({
                     {/* Component preview */}
                     <div
                         className={cn(
-                            'rounded-xl border border-[var(--border-subtle)] p-12',
-                            canvasTheme === 'dark' ? 'bg-[var(--surface-raised)]' : 'bg-gray-50',
+                            'rounded-xl border border-[var(--border)] p-12',
+                            canvasTheme === 'dark' ? 'bg-[var(--bg-raised)]' : 'bg-gray-50',
                         )}
                     >
                         <LivePreview componentName={componentName} config={config} />
@@ -624,7 +651,7 @@ export function EditorClient({
                 </div>
 
                 {/* Code snippet panel */}
-                <div className="w-[280px] flex-shrink-0 border-l border-[var(--border-subtle)] bg-[var(--surface-raised)]">
+                <div className="w-[280px] flex-shrink-0 border-l border-[var(--border)] bg-[var(--bg-raised)]">
                     <CodeSnippetPanel componentName={componentName} snippet={snippet} />
                 </div>
             </div>

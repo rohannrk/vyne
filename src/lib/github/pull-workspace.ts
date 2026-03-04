@@ -53,9 +53,11 @@ async function readComponentFromGitHub(params: {
                 const props = parseComponentProps(content)
                 return { props, filePath: path }
             }
-        } catch (err: unknown) {
-            const status = (err as { status?: number }).status
-            if (status === 404) continue // try next candidate
+        } catch (err: any) {
+            const status = err?.status || err?.response?.status
+            if (status === 404 || (err?.message && (err.message.includes('404') || err.message.includes('Not Found')))) {
+                continue // try next candidate
+            }
             throw err // re-throw auth/network errors
         }
     }

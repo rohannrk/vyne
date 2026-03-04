@@ -4,154 +4,130 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ─── VYNE Design Tokens ──────────────────────────────────────────────────── */
-/* Dark-mode-first. OKLCH colour system. Linear-inspired. */
-
 @theme inline {
   /* Map CSS vars → Tailwind utilities */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 
   /* Surfaces */
-  --color-surface-base: var(--surface-base);
-  --color-surface-raised: var(--surface-raised);
-  --color-surface-overlay: var(--surface-overlay);
+  --color-bg-row: var(--bg-row);
+  --color-bg-raised: var(--bg-raised);
+  --color-bg-canvas: var(--bg-canvas);
+  --color-bg-slider: var(--bg-slider);
 
-  /* Border */
-  --color-border-subtle: var(--border-subtle);
+  /* Borders */
+  --color-border: var(--border);
+  --color-border-muted: var(--border-muted);
 
   /* Text */
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-tertiary: var(--text-tertiary);
+  --color-text-bright: var(--text-bright);
+  --color-text: var(--text);
+  --color-text-soft: var(--text-soft);
+  --color-text-dim: var(--text-dim);
+  --color-text-muted: var(--text-muted);
 
-  /* Brand */
-  --color-brand: var(--brand);
-  --color-brand-subtle: var(--brand-subtle);
-
-  /* Status */
-  --color-status-synced: var(--status-synced);
-  --color-status-modified: var(--status-modified);
-  --color-status-pending-add: var(--status-pending-add);
-  --color-status-pending-push: var(--status-pending-push);
-  --color-status-error: var(--status-error);
-
-  /* shadcn compat tokens */
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
+  /* Accents */
   --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --color-accent-muted-bg: var(--accent-muted-bg);
+  --color-accent-muted-text: var(--accent-muted-text);
+  --color-destructive-bg: var(--destructive-bg);
+  --color-destructive-text: var(--destructive-text);
+
+  /* shadcn compat tokens mapping to minimal theme */
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--text-bright);
+  --color-secondary: var(--bg-row);
+  --color-secondary-foreground: var(--text-bright);
+  --color-muted: var(--border-muted);
+  --color-muted-foreground: var(--text-soft);
+  --color-destructive: var(--destructive-bg);
+  --color-popover: var(--bg-raised);
+  --color-popover-foreground: var(--text-bright);
+  --color-card: var(--bg-raised);
+  --color-card-foreground: var(--text-bright);
+  --color-input: var(--border);
+  --color-ring: var(--border-muted);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
 }
 
-/* ─── VYNE: Dark mode is the only mode for MVP ───────────────────────────── */
 :root {
-  --radius: 0.5rem;
+  /* Surfaces */
+  --bg: #1a1a1a;
+  --bg-row: #222222;
+  --bg-raised: #252525;
+  --bg-canvas: #151515;
+  --bg-slider: #282828;
 
-  /* VYNE surface system */
-  --surface-base: oklch(0.12 0 0);
-  --surface-raised: oklch(0.17 0 0);
-  --surface-overlay: oklch(0.22 0 0);
-  --border-subtle: oklch(0.28 0 0);
+  /* Borders */
+  --border: #2a2a2a;
+  --border-muted: #3a3a3a;
 
-  /* VYNE text system */
-  --text-primary: oklch(0.96 0 0);
-  --text-secondary: oklch(0.65 0 0);
-  --text-tertiary: oklch(0.45 0 0);
+  /* Text */
+  --text-bright: #ebebeb;
+  --text: #c8c8c8;
+  --text-soft: #888888;
+  --text-dim: #555555;
+  --text-muted: #3a3a3a;
 
-  /* VYNE brand — violet-indigo */
-  --brand: oklch(0.72 0.19 260);
-  --brand-subtle: oklch(0.20 0.06 260);
+  /* Accents */
+  --accent: #3d6bff;
+  --accent-muted-bg: #1e2d54;
+  --accent-muted-text: #6b95ff;
+  --destructive-bg: #3d1515;
+  --destructive-text: #f07070;
 
-  /* VYNE status colours */
-  --status-synced: oklch(0.72 0.17 145);
-  --status-modified: oklch(0.80 0.17 70);
-  --status-pending-add: oklch(0.72 0.14 240);
-  --status-pending-push: oklch(0.55 0 0);
-  --status-error: oklch(0.65 0.20 25);
+  /* Typography */
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'Fira Code', ui-monospace, monospace;
 
-  /* shadcn token overrides → VYNE dark palette */
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.96 0 0);
-  --card: oklch(0.17 0 0);
-  --card-foreground: oklch(0.96 0 0);
-  --popover: oklch(0.22 0 0);
-  --popover-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.72 0.19 260);
-  --primary-foreground: oklch(0.96 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.96 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.20 0.06 260);
-  --accent-foreground: oklch(0.96 0 0);
-  --destructive: oklch(0.65 0.20 25);
-  --border: oklch(0.28 0 0);
-  --input: oklch(0.22 0 0);
-  --ring: oklch(0.72 0.19 260);
-  --sidebar: oklch(0.15 0 0);
-  --sidebar-foreground: oklch(0.96 0 0);
-  --sidebar-primary: oklch(0.72 0.19 260);
-  --sidebar-primary-foreground: oklch(0.96 0 0);
-  --sidebar-accent: oklch(0.20 0.06 260);
-  --sidebar-accent-foreground: oklch(0.96 0 0);
-  --sidebar-border: oklch(0.22 0 0);
-  --sidebar-ring: oklch(0.72 0.19 260);
+  /* We'll also provide the layout tokens so the UI can reference them globally via var() */
+  --topbar-height: 44px;
+  --sidebar-width: 172px;
+  --panel-width: 210px;
+  --row-height: 34px;
+  --row-height-lg: 38px;
+  --row-height-xl: 42px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 5px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+
+  /* Component sizing / transitions */
+  --transition-fast: 0.1s ease;
+  --transition-base: 0.12s ease;
+  --transition-slow: 0.15s ease;
 }
 
-/* ─── Base styles ─────────────────────────────────────────────────────────── */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
     box-sizing: border-box;
   }
 
   html,
-  html.dark {
-    color-scheme: dark;
-  }
-
-  body {
-    /* Hard-code body background to guarantee dark mode regardless of shadcn cascade */
-    background-color: oklch(0.12 0 0);
-    color: oklch(0.96 0 0);
-    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  body,
+  #root {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Scrollbar styling — subtle, not distracting */
+  /* Scrollbar styling */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 3px;
+    height: 3px;
   }
 
   ::-webkit-scrollbar-track {
@@ -159,21 +135,16 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.32 0 0);
-    border-radius: 3px;
+    background: var(--bg-slider);
+    border-radius: 2px;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.40 0 0);
-  }
-
-  /* Focus ring — brand colour */
+  /* Remove outline globally to use custom ring if needed, or stick to defaults */
   :focus-visible {
-    outline: 2px solid var(--brand);
+    outline: 2px solid var(--border-muted);
     outline-offset: 2px;
   }
 
-  /* Reduce motion */
   @media (prefers-reduced-motion: reduce) {
 
     *,
@@ -185,56 +156,7 @@
   }
 }
 
-/* ─── VYNE utility classes ────────────────────────────────────────────────── */
 @layer utilities {
-  .vyne-surface-base {
-    background-color: var(--surface-base);
-  }
-
-  .vyne-surface-raised {
-    background-color: var(--surface-raised);
-  }
-
-  .vyne-surface-overlay {
-    background-color: var(--surface-overlay);
-  }
-
-  .vyne-text-primary {
-    color: var(--text-primary);
-  }
-
-  .vyne-text-secondary {
-    color: var(--text-secondary);
-  }
-
-  .vyne-text-tertiary {
-    color: var(--text-tertiary);
-  }
-
-  .vyne-border {
-    border-color: var(--border-subtle);
-  }
-
-  .vyne-status-synced {
-    color: var(--status-synced);
-  }
-
-  .vyne-status-modified {
-    color: var(--status-modified);
-  }
-
-  .vyne-status-pending-add {
-    color: var(--status-pending-add);
-  }
-
-  .vyne-status-pending-push {
-    color: var(--status-pending-push);
-  }
-
-  .vyne-status-error {
-    color: var(--status-error);
-  }
-
   .tabular {
     font-variant-numeric: tabular-nums;
   }

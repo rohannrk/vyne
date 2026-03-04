@@ -40,28 +40,28 @@ export function WorkspaceSwitcher({
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button
-                    className="flex w-full items-center gap-2 rounded-md px-1 py-0.5 text-left transition-colors hover:bg-[var(--surface-overlay)] focus:outline-none"
+                    className="flex w-full items-center gap-2 rounded-md px-1 py-0.5 text-left transition-colors hover:bg-[var(--bg-row)] focus:outline-none"
                     aria-label="Switch workspace"
                     id="workspace-switcher-trigger"
                 >
                     {/* Workspace icon */}
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[var(--brand)] text-[10px] font-bold text-white">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[var(--accent)] text-[10px] font-bold text-white">
                         {currentWorkspaceName.charAt(0).toUpperCase()}
                     </div>
-                    <span className="flex-1 truncate text-sm font-semibold text-[var(--text-primary)]">
+                    <span className="flex-1 truncate text-sm font-semibold text-[var(--text-bright)]">
                         {currentWorkspaceName}
                     </span>
-                    <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-[var(--text-tertiary)]" />
+                    <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-[var(--text-dim)]" />
                 </button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
                 align="start"
                 sideOffset={6}
-                className="w-[210px] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-1.5 shadow-xl"
+                className="w-[210px] rounded-xl border border-[var(--border)] bg-[var(--bg-raised)] p-1.5 shadow-xl"
             >
                 {/* Header label */}
-                <p className="px-2 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+                <p className="px-2 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-dim)]">
                     Workspaces
                 </p>
 
@@ -77,15 +77,15 @@ export function WorkspaceSwitcher({
                             className={cn(
                                 'flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-sm outline-none transition-colors',
                                 isActive
-                                    ? 'bg-[var(--brand-subtle)] text-[var(--brand)]'
-                                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-overlay)] hover:text-[var(--text-primary)]',
+                                    ? 'bg-[var(--accent-muted-bg)] text-[var(--accent)]'
+                                    : 'text-[var(--text)] hover:bg-[var(--bg-row)] hover:text-[var(--text-bright)]',
                             )}
                         >
                             {/* Workspace letter avatar */}
                             <div
                                 className={cn(
                                     'flex h-5 w-5 shrink-0 items-center justify-center rounded text-[9px] font-bold',
-                                    isActive ? 'bg-[var(--brand)] text-white' : 'bg-[var(--surface-overlay)] text-[var(--text-secondary)]',
+                                    isActive ? 'bg-[var(--accent)] text-white' : 'bg-[var(--bg-row)] text-[var(--text)]',
                                 )}
                             >
                                 {ws.name.charAt(0).toUpperCase()}
@@ -93,7 +93,7 @@ export function WorkspaceSwitcher({
 
                             <div className="flex-1 min-w-0">
                                 <p className="truncate text-xs font-medium leading-none">{ws.name}</p>
-                                <p className="mt-0.5 text-[10px] text-[var(--text-tertiary)]">
+                                <p className="mt-0.5 text-[10px] text-[var(--text-dim)]">
                                     {ROLE_LABELS[ws.role]}
                                 </p>
                             </div>
@@ -104,14 +104,14 @@ export function WorkspaceSwitcher({
                     )
                 })}
 
-                <DropdownMenuSeparator className="my-1 border-[var(--border-subtle)]" />
+                <DropdownMenuSeparator className="my-1 border-[var(--border)]" />
 
                 {/* All workspaces link */}
                 <DropdownMenuItem
                     onClick={() => router.push('/workspaces')}
-                    className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-xs text-[var(--text-secondary)] outline-none transition-colors hover:bg-[var(--surface-overlay)] hover:text-[var(--text-primary)]"
+                    className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-xs text-[var(--text)] outline-none transition-colors hover:bg-[var(--bg-row)] hover:text-[var(--text-bright)]"
                 >
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-dashed border-[var(--border-subtle)]">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-dashed border-[var(--border)]">
                         <span className="text-[10px]">⊞</span>
                     </div>
                     All workspaces
@@ -120,9 +120,9 @@ export function WorkspaceSwitcher({
                 {/* Create new */}
                 <DropdownMenuItem
                     onClick={() => router.push('/onboarding')}
-                    className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-xs text-[var(--text-secondary)] outline-none transition-colors hover:bg-[var(--surface-overlay)] hover:text-[var(--text-primary)]"
+                    className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-xs text-[var(--text)] outline-none transition-colors hover:bg-[var(--bg-row)] hover:text-[var(--text-bright)]"
                 >
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-dashed border-[var(--border-subtle)]">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-dashed border-[var(--border)]">
                         <Plus className="h-3 w-3" />
                     </div>
                     Create workspace

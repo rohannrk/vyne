@@ -12,12 +12,12 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
       {Array.from({ length: total }).map((_, i) => (
         <div key={i} className="flex items-center gap-2">
           <div
-            className={`h-1.5 w-6 rounded-full transition-colors ${i + 1 <= current ? 'bg-[var(--brand)]' : 'bg-[var(--border-subtle)]'
+            className={`h-1.5 w-6 rounded-full transition-colors ${i + 1 <= current ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
               }`}
           />
         </div>
       ))}
-      <span className="ml-1 text-xs text-[var(--text-tertiary)]">
+      <span className="ml-1 text-xs text-[var(--text-dim)]">
         Step {current} of {total}
       </span>
     </div>
@@ -45,22 +45,22 @@ export default async function ConnectGitHubPage() {
       <StepIndicator current={2} total={4} />
 
       <div>
-        <h2 className="text-xl font-semibold text-[var(--text-primary)]">Connect GitHub</h2>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">
+        <h2 className="text-xl font-semibold text-[var(--text-bright)]">Connect GitHub</h2>
+        <p className="mt-1 text-sm text-[var(--text)]">
           VYNE needs access to your repositories to read and write component files.
         </p>
       </div>
 
-      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-6 space-y-6">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-raised)] p-6 space-y-6">
         {session.user.image && (
-          <div className="flex items-center gap-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-base)] px-3 py-2.5">
+          <div className="flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2.5">
             <Avatar className="h-8 w-8 flex-shrink-0">
               <AvatarImage src={session.user.image} alt={session.user.name ?? ''} />
               <AvatarFallback>{session.user.name?.[0] ?? 'U'}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1 text-sm">
-              <p className="font-medium text-[var(--text-primary)] truncate">{session.user.name}</p>
-              <p className="text-[var(--text-tertiary)] text-xs truncate">{session.user.email}</p>
+              <p className="font-medium text-[var(--text-bright)] truncate">{session.user.name}</p>
+              <p className="text-[var(--text-dim)] text-xs truncate">{session.user.email}</p>
             </div>
             <CheckCircle2 className="h-4 w-4 text-[var(--status-synced)] flex-shrink-0" aria-hidden="true" />
           </div>
@@ -75,7 +75,7 @@ export default async function ConnectGitHubPage() {
           <button
             type="submit"
             id="connect-github-btn"
-            className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-[var(--surface-overlay)] border border-[var(--border-subtle)] px-4 py-2.5 text-sm font-medium text-[var(--text-primary)] transition-all duration-150 hover:border-[var(--brand)]/50 hover:shadow-[0_0_0_1px_oklch(0.72_0.19_260/0.2)]"
+            className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-[var(--bg-row)] border border-[var(--border)] px-4 py-2.5 text-sm font-medium text-[var(--text-bright)] transition-all duration-150 hover:border-[var(--accent)]/50 hover:shadow-[0_0_0_1px_oklch(0.72_0.19_260/0.2)]"
           >
             <GitHubIcon />
             Connect GitHub

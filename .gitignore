@@ -48,3 +48,5 @@ next-env.d.ts
 /.cursor
 /.cursor/commands
 CHANGELOG.md
+
+/vyne.pen
