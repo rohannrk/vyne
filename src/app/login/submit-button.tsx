@@ -10,7 +10,7 @@ export function SubmitButton() {
             type="submit"
             id="github-signin-btn"
             disabled={pending}
-            className="flex w-full min-h-[40px] cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-[var(--bg-row)] border border-[var(--border)] px-4 py-2.5 text-sm font-medium text-[var(--text-bright)] transition-[background-color,border-color,color,fill,stroke,transform] duration-150 active:scale-[0.97] hover:border-[var(--text-dim)] hover:bg-[var(--bg-raised)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-muted)] disabled:pointer-events-none disabled:opacity-50"
+            className="flex w-full min-h-[40px] cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-white border border-transparent px-4 py-2.5 text-sm font-medium text-black transition-[background-color,border-color,color,fill,stroke,transform] duration-150 active:scale-[0.97] hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-muted)] disabled:pointer-events-none disabled:opacity-50"
         >
             <GitHubIcon />
             {pending ? 'Connecting...' : 'Continue with GitHub'}
