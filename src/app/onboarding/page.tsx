@@ -23,13 +23,13 @@ export default async function OnboardingPage() {
       <StepIndicator current={1} total={4} />
 
       <div>
-        <h2 className="text-xl font-semibold text-[var(--text-bright)]">Create your workspace</h2>
+        <h2 className="text-base font-semibold text-[var(--text-bright)]">Create your workspace</h2>
         <p className="mt-1 text-sm text-[var(--text)]">
           Give your workspace a name — you can change it later.
         </p>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-raised)] p-6">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-raised)] p-6 shadow-[0_4px_32px_oklch(0_0_0/0.4)]">
         <CreateWorkspaceForm />
       </div>
     </div>

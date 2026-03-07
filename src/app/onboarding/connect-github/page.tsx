@@ -45,13 +45,13 @@ export default async function ConnectGitHubPage() {
       <StepIndicator current={2} total={4} />
 
       <div>
-        <h2 className="text-xl font-semibold text-[var(--text-bright)]">Connect GitHub</h2>
+        <h2 className="text-base font-semibold text-[var(--text-bright)]">Connect GitHub</h2>
         <p className="mt-1 text-sm text-[var(--text)]">
           VYNE needs access to your repositories to read and write component files.
         </p>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-raised)] p-6 space-y-6">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-raised)] p-6 shadow-[0_4px_32px_oklch(0_0_0/0.4)] space-y-6">
         {session.user.image && (
           <div className="flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2.5">
             <Avatar className="h-8 w-8 flex-shrink-0">
@@ -75,7 +75,7 @@ export default async function ConnectGitHubPage() {
           <button
             type="submit"
             id="connect-github-btn"
-            className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-[var(--bg-row)] border border-[var(--border)] px-4 py-2.5 text-sm font-medium text-[var(--text-bright)] transition-all duration-150 hover:border-[var(--accent)]/50 hover:shadow-[0_0_0_1px_oklch(0.72_0.19_260/0.2)]"
+            className="flex w-full min-h-[40px] cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-white border border-transparent px-4 py-2.5 text-sm font-medium text-black transition-[background-color,border-color,color,fill,stroke,transform] duration-150 active:scale-[0.97] hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-muted)]"
           >
             <GitHubIcon />
             Connect GitHub
