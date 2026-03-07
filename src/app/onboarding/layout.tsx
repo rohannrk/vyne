@@ -11,17 +11,16 @@ export default function OnboardingLayout({
         style={{
           backgroundImage:
             'linear-gradient(var(--text-bright) 1px, transparent 1px), linear-gradient(90deg, var(--text-bright) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+          backgroundSize: '4px 4px',
         }}
         aria-hidden="true"
       />
-      <div className="relative w-full max-w-md py-12">
-        {/* Logo */}
-        <div className="mb-8 flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent)]">
-            <span className="text-sm font-bold text-white">V</span>
-          </div>
-          <span className="text-lg font-bold text-[var(--text-bright)]">VYNE</span>
+      <div className="relative w-full max-w-sm">
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--text-bright)]">VYNE</h1>
+          <p className="mt-1 text-sm text-[var(--text)]">
+            GitHub-native control plane for design systems
+          </p>
         </div>
         {children}
       </div>

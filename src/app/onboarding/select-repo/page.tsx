@@ -40,13 +40,13 @@ export default async function SelectRepoPage() {
       <StepIndicator current={3} total={4} />
 
       <div>
-        <h2 className="text-xl font-semibold text-[var(--text-bright)]">Select repository</h2>
+        <h2 className="text-base font-semibold text-[var(--text-bright)]">Select repository</h2>
         <p className="mt-1 text-sm text-[var(--text)]">
           Choose the GitHub repository that contains your shadcn/ui components.
         </p>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-raised)] p-6">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-raised)] p-6 shadow-[0_4px_32px_oklch(0_0_0/0.4)]">
         <SelectRepoForm workspaceId={workspaceUser.workspaceId} />
       </div>
     </div>

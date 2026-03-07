@@ -5,6 +5,24 @@ import { redirect } from 'next/navigation'
 import { SelectDirectoryForm } from '@/components/onboarding/select-directory-form'
 import { Skeleton } from '@/components/ui/skeleton'
 
+function StepIndicator({ current, total }: { current: number; total: number }) {
+  return (
+    <div className="flex items-center gap-2">
+      {Array.from({ length: total }).map((_, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <div
+            className={`h-1.5 w-6 rounded-full transition-colors ${i + 1 <= current ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
+              }`}
+          />
+        </div>
+      ))}
+      <span className="ml-1 text-xs text-[var(--text-dim)]">
+        Step {current} of {total}
+      </span>
+    </div>
+  )
+}
+
 export default async function SelectDirectoryPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
@@ -30,18 +48,20 @@ export default async function SelectDirectoryPage() {
 
   return (
     <div className="space-y-6">
+      <StepIndicator current={4} total={4} />
+
       <div className="space-y-1">
-        <h2 className="text-xl font-semibold">Select component directory</h2>
-        <p className="text-muted-foreground text-sm">
+        <h2 className="text-base font-semibold text-[var(--text-bright)]">Select component directory</h2>
+        <p className="text-sm text-[var(--text)]">
           Pick the folder where your shadcn/ui component files live (e.g.{' '}
-          <code className="text-xs bg-muted px-1 py-0.5 rounded">
+          <code className="rounded bg-[var(--bg-row)] px-1 py-0.5 text-xs text-[var(--text)]">
             src/components/ui
           </code>
           ).
         </p>
       </div>
 
-      <div className="rounded-xl border bg-card p-6 shadow-sm">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-raised)] p-6 shadow-[0_4px_32px_oklch(0_0_0/0.4)]">
         <Suspense fallback={<Skeleton className="h-48 w-full" />}>
           <SelectDirectoryForm
             workspaceId={workspaceUser.workspaceId}
@@ -51,8 +71,6 @@ export default async function SelectDirectoryPage() {
           />
         </Suspense>
       </div>
-
-      <p className="text-center text-xs text-muted-foreground">Step 4 of 4</p>
     </div>
   )
 }
